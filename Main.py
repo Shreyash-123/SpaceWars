@@ -6,20 +6,20 @@ import os
 import random
 import sys
 
-SCREEN_HEIGHT = 600
-SCREEN_WIDTH = 1000
-PLAYER_X = 430
-PLAYER_Y = 480
-MOVE_PLAYER_X = 10
+SCREEN_HEIGHT = 600 #Height of screen window
+SCREEN_WIDTH = 1000 #Width of screen window
+PLAYER_X = 430 #Space-ship x-axis
+PLAYER_Y = 480  #Space-ship y-axis
+MOVE_PLAYER_X = 10 #Move Space-ship in x-axis
 ENEMY_X = 480
 ENEMY_Y = 20
 ENEMY_X_CHANGE = 20
 ENEMY_Y_CHANGE = 30
-BULLET_X = 0  # Not used
+BULLET_X = 0  # At start value is zero
 BULLET_Y = 480
-BULLET_CHANGE_X = 0
-BULLET_CHANGE_Y = 15
-FPS = 40
+BULLET_CHANGE_X = 0 #x-axis change of bullet not required
+BULLET_CHANGE_Y = 15 #y-axis change of bullet 
+FPS = 40 #Frames Per Second
 WHITE = (255, 255, 255)
 """
  Enemy respawning range
@@ -27,7 +27,7 @@ WHITE = (255, 255, 255)
  -> y-axis = randint(0, 200)
 """
 
-
+# Game Loop to initialize screen and game characters
 class Game:
     def __init__(self):
         pygame.init()
@@ -107,7 +107,8 @@ class Game:
         if enemy_rectangle.colliderect(spaceship_rectangle):
             return True
         return False
-
+       
+    #Continuous loop
     def play(self):
         self.player.move()
         self.bullet.move(BULLET_X)
@@ -157,6 +158,7 @@ class Game:
             self.play()
 
 
+#Space-ship class
 class Player:
     def __init__(self, screen):
         self.screen = screen
@@ -188,6 +190,7 @@ class Player:
         self.draw()
 
 
+#Enemy Class
 class Enemy:
     def __init__(self, screen):
         self.screen = screen
@@ -200,7 +203,8 @@ class Enemy:
         self.enemies_list = os.listdir(self.enemy_dir)
         for i in range(self.num_of_enemies):
             self.add_enemy()
-
+    
+    #add a enemy function
     def add_enemy(self):
         # Range of positioning enemy
         self.x.append(random.randint(0, 870))
@@ -209,7 +213,8 @@ class Enemy:
         enemy_image = os.path.join(self.enemy_dir, self.enemies_list[rand_enemy])
         self.image.append(pygame.image.load(enemy_image))
         self.direction.append(random.choice([-ENEMY_X_CHANGE, ENEMY_X_CHANGE]))
-
+    
+    # Random enemy position with random image
     def random_enemy_after_collision(self, i):
         self.image.pop(i)
         self.direction.pop(i)
@@ -217,7 +222,8 @@ class Enemy:
         enemy_image = os.path.join(self.enemy_dir, self.enemies_list[rand_enemy])
         self.image.insert(i, pygame.image.load(enemy_image))
         self.direction.insert(i, random.choice([-ENEMY_X_CHANGE, ENEMY_X_CHANGE]))
-
+    
+    # move enemy
     def move(self):
         for i in range(self.num_of_enemies):
             self.x[i] += self.direction[i]
@@ -232,12 +238,14 @@ class Enemy:
                 self.direction[i] = -ENEMY_X_CHANGE
                 self.y[i] += ENEMY_Y_CHANGE
             self.draw(i)
-
+    
+    # Draw enemy
     def draw(self, i):
         self.screen.blit(self.image[i], (self.x[i], self.y[i]))
         # pygame.display.flip()
 
 
+# Bullet class
 class Bullet:
     def __init__(self, screen):
         self.screen = screen
@@ -264,11 +272,12 @@ class Bullet:
             self.bullet_y -= BULLET_CHANGE_Y
 
 
-# Function to Start the Game
+# Function to Start the Game again after game is over
 def start():
     game = Game()
     game.run()
 
-
+   
+# main function
 if __name__ == "__main__":
     start()
